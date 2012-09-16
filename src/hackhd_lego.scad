@@ -23,10 +23,31 @@ module hhd_frame(show_hhd=false) {
   echo(" lu2top: ",lu2top);
   echo(" lu2bot: ",lu2bot);
   difference() {
-    translate([-(lu2side+1)*lego_unit_xy,-(lu2bot+1)*lego_unit_xy,-lego_unit_3rd_h])
-      cube([2*(lu2side+1)*lego_unit_xy,(lu2top+lu2bot+2)*lego_unit_xy,lego_unit_3rd_h],center=false);
-    translate([-hhd_cam_rel_rhs,-hhd_h+hhd_cam_rel_top,-2*lego_unit_3rd_h]) linear_extrude(height=3*lego_unit_3rd_h)
+    translate([-(lu2side+1)*lego_unit_xy,-(lu2bot+1)*lego_unit_xy,-lego_unit_h])
+      cube([2*(lu2side+1)*lego_unit_xy,(lu2top+lu2bot+2)*lego_unit_xy,lego_unit_h],center=false);
+    translate([-hhd_cam_rel_rhs,-hhd_h+hhd_cam_rel_top,-2*lego_unit_h/3]) linear_extrude(height=3*lego_unit_3rd_h)
 	hackhd_pcb_2d();
+  }
+  translate([-hhd_cam_bolts_dx/2,0,-2*lego_unit_h/3]) difference() {
+    union() {
+      cylinder(r=hhd_bolt_surround_d/2,h=2*lego_unit_h/3-hhd_pcb_th,center=false);
+      cylinder(r1=lego_unit_h/3+hhd_bolt_surround_d/2,r2=hhd_bolt_surround_d/2,h=lego_unit_h/3,center=false);
+    }
+    cylinder(r=hhd_bolt_d/2,h=2*lego_unit_h/3,center=false);
+  }
+  translate([hhd_cam_bolts_dx/2,0,-2*lego_unit_h/3]) difference() {
+    union() {
+      cylinder(r=hhd_bolt_surround_d/2,h=2*lego_unit_h/3-hhd_pcb_th,center=false);
+      cylinder(r1=lego_unit_h/3+hhd_bolt_surround_d/2,r2=hhd_bolt_surround_d/2,h=lego_unit_h/3,center=false);
+    }
+    cylinder(r=hhd_bolt_d/2,h=2*lego_unit_h/3,center=false);
+  }
+  translate([0,hhd_cam_rel_rhs-hhd_anchor_bolt_rel_top,-2*lego_unit_h/3]) difference() {
+    union() {
+      cylinder(r=hhd_bolt_surround_d/2,h=2*lego_unit_h/3-hhd_pcb_th,center=false);
+      cylinder(r1=lego_unit_h/3+hhd_bolt_surround_d/2,r2=hhd_bolt_surround_d/2,h=lego_unit_h/3,center=false);
+    }
+    cylinder(r=hhd_bolt_d/2,h=2*lego_unit_h/3,center=false);
   }
   for(iy=[-lu2bot:lu2top]) {
     translate([-(lu2side+0.5)*lego_unit_xy,(iy-0.5)*lego_unit_xy,0]) cylinder(r=lego_peg_d/2,h=lego_unit_peg_h,center=false);
@@ -42,6 +63,6 @@ module hhd_frame(show_hhd=false) {
 
 if(render_part=="hhd_frame") {
   echo("Rendering hhd_frame()...");
-  hhd_frame(show_hhd=true);
+  translate([0,0,lego_unit_h]) hhd_frame(show_hhd=true);
 }
 
